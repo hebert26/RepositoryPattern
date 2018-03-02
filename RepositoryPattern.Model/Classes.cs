@@ -18,7 +18,6 @@ namespace RepositoryPattern.Classes
         public int ClanId { get; set; }
         public List<NinjaEquipment> EquipmentOwned { get; set; }
         public DateTime DateOfBirth { get; set; }
-        public DateTime YearOfBirth { get; set; }
     }
 
     public class Clan : EntityBase

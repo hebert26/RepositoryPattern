@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.Entity;
 using System.Linq;
 using Repository.Ioc;
 using RepositoryImplementation;
 using RepositoryPattern.Classes;
-using RepositoryPattern.DataModel;
 using StructureMap;
 
 namespace RepositoryPattern.App
@@ -14,12 +12,17 @@ namespace RepositoryPattern.App
     {
         private static void Main(string[] args)
         {
-            Database.SetInitializer(new NullDatabaseInitializer<DbContext>());
+            //Database.SetInitializer(new DropCreateDatabaseAlways<NinjaContext>());
+            //  Database.SetInitializer(new NullDatabaseInitializer<DbContext>());
 
             IContainer ico = Ioc.Initialize();
-            var repo = ico.GetInstance<IRepository<Ninja>>();
+            var ninjaRepository = ico.GetInstance<IRepository<Ninja>>();
+            var clanRepository = ico.GetInstance<IRepository<Clan>>();
+
+            //  InsertTestData(ninjaRepository, clanRepository);
+
             Console.WriteLine("Ninjas:");
-            IEnumerable<Ninja> ninjas = repo.All();
+            IEnumerable<Ninja> ninjas = ninjaRepository.All();
 
             foreach (var ninja in ninjas)
             {
@@ -27,18 +30,9 @@ namespace RepositoryPattern.App
             }
 
             Console.WriteLine();
-            Console.WriteLine("Equipments:");
-
-            var repo2 = ico.GetInstance<IRepository<NinjaEquipment>>();
-            IEnumerable<NinjaEquipment> ninjaEquipments = repo2.All();
-            foreach (var equiment in ninjaEquipments)
-            {
-                Console.WriteLine(equiment.Name);
-            }
-            Console.WriteLine();
             Console.WriteLine("Clans:");
-            var repo3 = ico.GetInstance<IRepository<Clan>>();
-            IEnumerable<Clan> clans = repo3.All();
+
+            IEnumerable<Clan> clans = clanRepository.All();
             foreach (var clan in clans)
             {
                 Console.WriteLine(clan.ClanName);
@@ -47,56 +41,44 @@ namespace RepositoryPattern.App
             Console.ReadLine();
         }
 
-        private static void InserNinja()
+        private static void InsertTestData(IRepository<Ninja> ninjaRepository, IRepository<Clan> clanRepository)
         {
-            using (var dbContexts = new NinjaContext())
+            const string clanName = "Vermont Clan";
+            clanRepository.Add(new Clan { ClanName = clanName });
+
+            Clan clan = clanRepository.FindBy(c => c.ClanName == clanName).FirstOrDefault();
+
+            if (clan != null)
             {
-                List<Ninja> newNinjas = new List<Ninja>();
-                var newNinja1 = new Ninja()
+                ninjaRepository.Add(new Ninja
                 {
-                    Name = "Jose",
+                    Name = "JulieSan",
                     ServedInOniwaban = false,
                     DateOfBirth = new DateTime(1980, 1, 1),
-                    YearOfBirth = new DateTime(1980, 1, 1),
-                    ClanId = 1
-                };
-                newNinjas.Add(newNinja1);
-
-                var newNinja2 = new Ninja()
+                    ClanId = clan.Id
+                });
+                var s = new Ninja
                 {
-                    Name = "Anna",
+                    Name = "SampsonSan",
                     ServedInOniwaban = false,
-                    DateOfBirth = new DateTime(1980, 1, 1),
-                    YearOfBirth = new DateTime(1980, 1, 1),
-                    ClanId = 1
+                    DateOfBirth = new DateTime(2008, 1, 28),
+                    ClanId = clan.Id
                 };
-                newNinjas.Add(newNinja2);
-
-                var newNinja3 = new Ninja()
+                ninjaRepository.Add(new Ninja
                 {
-                    Name = "David",
+                    Name = "Leonardo",
                     ServedInOniwaban = false,
-                    DateOfBirth = new DateTime(1980, 1, 1),
-                    YearOfBirth = new DateTime(1980, 1, 1),
-                    ClanId = 1
-                };
-                newNinjas.Add(newNinja3);
+                    DateOfBirth = new DateTime(1984, 1, 1),
+                    ClanId = clan.Id
+                });
 
-                dbContexts.Database.Log = Console.WriteLine;
-                dbContexts.Ninjas.AddRange(newNinjas);
-                dbContexts.SaveChanges();
-            }
-        }
-
-        private static void GetNinjas()
-        {
-            using (var dbContexts = new NinjaContext())
-            {
-                IQueryable<Ninja> ninjas = dbContexts.Ninjas.Where(x => x.ClanId == 1);
-                foreach (var ninja in ninjas)
+                ninjaRepository.Add(new Ninja
                 {
-                    Console.WriteLine(ninja.Name);
-                }
+                    Name = "Raphael",
+                    ServedInOniwaban = false,
+                    DateOfBirth = new DateTime(1985, 1, 1),
+                    ClanId = clan.Id
+                });
             }
         }
     }

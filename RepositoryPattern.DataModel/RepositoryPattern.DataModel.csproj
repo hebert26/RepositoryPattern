@@ -55,11 +55,16 @@
     <Compile Include="Migrations\201802191918427_initialAddYear.Designer.cs">
       <DependentUpon>201802191918427_initialAddYear.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201803021903462_deleteYearOfBith.cs" />
+    <Compile Include="Migrations\201803021903462_deleteYearOfBith.Designer.cs">
+      <DependentUpon>201803021903462_deleteYearOfBith.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="NinjaContext.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="App.config" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
@@ -74,6 +79,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201802191918427_initialAddYear.resx">
       <DependentUpon>201802191918427_initialAddYear.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201803021903462_deleteYearOfBith.resx">
+      <DependentUpon>201803021903462_deleteYearOfBith.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
