@@ -2,8 +2,11 @@
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
+using Repository.Ioc;
+using RepositoryImplementation;
 using RepositoryPattern.Classes;
 using RepositoryPattern.DataModel;
+using StructureMap;
 
 namespace RepositoryPattern.App
 {
@@ -12,13 +15,34 @@ namespace RepositoryPattern.App
         private static void Main(string[] args)
         {
             Database.SetInitializer(new NullDatabaseInitializer<DbContext>());
-            /*
-             * The job of database initializer is to create the database and the specified tables. When a DbContext type is used to access database for the first time then the database initializer is called.
 
-               The Database.SetInitializer() method does this initialization operation. The following is the method signature(see documentation):
-            */
-            // InserNinja();
-            GetNinjas();
+            IContainer ico = Ioc.Initialize();
+            var repo = ico.GetInstance<IRepository<Ninja>>();
+            Console.WriteLine("Ninjas:");
+            IEnumerable<Ninja> ninjas = repo.All();
+
+            foreach (var ninja in ninjas)
+            {
+                Console.WriteLine(ninja.Name);
+            }
+
+            Console.WriteLine();
+            Console.WriteLine("Equipments:");
+
+            var repo2 = ico.GetInstance<IRepository<NinjaEquipment>>();
+            IEnumerable<NinjaEquipment> ninjaEquipments = repo2.All();
+            foreach (var equiment in ninjaEquipments)
+            {
+                Console.WriteLine(equiment.Name);
+            }
+            Console.WriteLine();
+            Console.WriteLine("Clans:");
+            var repo3 = ico.GetInstance<IRepository<Clan>>();
+            IEnumerable<Clan> clans = repo3.All();
+            foreach (var clan in clans)
+            {
+                Console.WriteLine(clan.ClanName);
+            }
 
             Console.ReadLine();
         }

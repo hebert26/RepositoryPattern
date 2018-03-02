@@ -66,6 +66,10 @@
       <Project>{490AB296-45DF-46F5-9F0E-ED6466FE0A15}</Project>
       <Name>RepositoryPattern.DataModel</Name>
     </ProjectReference>
+    <ProjectReference Include="..\RepositoryPattern.Model\RepositoryPattern.Classes.csproj">
+      <Project>{28D26FD3-759A-430A-AA68-F312420A87EC}</Project>
+      <Name>RepositoryPattern.Classes</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

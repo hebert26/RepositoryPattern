@@ -3,42 +3,43 @@ using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using System.Linq.Expressions;
+using RepositoryPattern.Classes;
 
 namespace RepositoryImplementation
 {
-    public class Repository<TEntity> : IRepository<TEntity> where TEntity : class, IEntity
+    public class Repository<T> : IRepository<T> where T : EntityBase
 
     {
         internal DbContext DbContext;
-        internal DbSet<TEntity> DbSet;
+        internal DbSet<T> DbSet;
 
         public Repository(DbContext dbContext)
         {
             DbContext = dbContext;
-            DbSet = dbContext.Set<TEntity>();
+            DbSet = dbContext.Set<T>();
         }
 
-        public IEnumerable<TEntity> AllInclude(params Expression<Func<TEntity, object>>[] includeProperties)
+        public IEnumerable<T> AllInclude(params Expression<Func<T, object>>[] includeProperties)
         {
             return GetAllIncluding(includeProperties).ToList();
         }
 
-        public IEnumerable<TEntity> FindByInclude(Expression<Func<TEntity, bool>> predicate, params Expression<Func<TEntity, object>>[] includeProperties)
+        public IEnumerable<T> FindByInclude(Expression<Func<T, bool>> predicate, params Expression<Func<T, object>>[] includeProperties)
         {
             var query = GetAllIncluding(includeProperties);
-            IEnumerable<TEntity> results = query.Where(predicate).ToList();
+            IEnumerable<T> results = query.Where(predicate).ToList();
             return results;
         }
 
-        private IQueryable<TEntity> GetAllIncluding(params Expression<Func<TEntity, object>>[] includeProperties)
+        private IQueryable<T> GetAllIncluding(params Expression<Func<T, object>>[] includeProperties)
         {
-            IQueryable<TEntity> queryable = DbSet.AsNoTracking();
+            IQueryable<T> queryable = DbSet.AsNoTracking();
 
             return includeProperties.Aggregate
               (queryable, (current, includeProperty) => current.Include(includeProperty));
         }
 
-        public void Add(TEntity entity)
+        public void Add(T entity)
         {
             DbSet.Add(entity);
             DbContext.SaveChanges();
@@ -46,34 +47,34 @@ namespace RepositoryImplementation
 
         public void Delete(int id)
         {
-            TEntity entity = FindById(id);
+            T entity = FindById(id);
             DbSet.Remove(entity);
             DbContext.SaveChanges();
         }
 
-        public void Update(TEntity entity)
+        public void Update(T entity)
         {
             DbSet.Attach(entity);
             DbContext.Entry(entity).State = EntityState.Modified;
             DbContext.SaveChanges();
         }
 
-        public TEntity FindById(int id)
+        public T FindById(int id)
         {
             // Expression<Func<TEntity, bool>> lambda = Utilities.BuildLambdaForFindByKey<TEntity>(id);
             //return _dbSet.AsNoTracking().SingleOrDefault(lambda);
             return DbSet.AsNoTracking().SingleOrDefault(x => x.Id == id);
         }
 
-        public IEnumerable<TEntity> All()
+        public IEnumerable<T> All()
         {
-            return DbSet.AsNoTracking().ToList();
+            return DbSet.AsNoTracking().AsEnumerable();
         }
 
-        public IEnumerable<TEntity> FindBy(Expression<Func<TEntity, bool>> predicate)
+        public IEnumerable<T> FindBy(Expression<Func<T, bool>> predicate)
         {
-            IEnumerable<TEntity> result = DbSet.AsNoTracking()
-                .Where(predicate).ToList();
+            IEnumerable<T> result = DbSet.AsNoTracking()
+                .Where(predicate).AsEnumerable();
             return result;
         }
     }

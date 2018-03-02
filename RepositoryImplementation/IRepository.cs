@@ -1,25 +1,26 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
+using RepositoryPattern.Classes;
 
 namespace RepositoryImplementation
 {
-    public interface IRepository<TEntity> where TEntity : class, IEntity
+    public interface IRepository<T> where T : EntityBase
     {
-        IEnumerable<TEntity> AllInclude(params Expression<Func<TEntity, object>>[] includeProperties);
+        IEnumerable<T> AllInclude(params Expression<Func<T, object>>[] includeProperties);
 
-        IEnumerable<TEntity> FindByInclude(Expression<Func<TEntity, bool>> predicate, params Expression<Func<TEntity, object>>[] includeProperties);
+        IEnumerable<T> FindByInclude(Expression<Func<T, bool>> predicate, params Expression<Func<T, object>>[] includeProperties);
 
-        TEntity FindById(int id);
+        T FindById(int id);
 
-        IEnumerable<TEntity> All();
+        IEnumerable<T> All();
 
-        IEnumerable<TEntity> FindBy(Expression<Func<TEntity, bool>> predicate);
+        IEnumerable<T> FindBy(Expression<Func<T, bool>> predicate);
 
-        void Add(TEntity entity);
+        void Add(T entity);
 
         void Delete(int entity);
 
-        void Update(TEntity entity);
+        void Update(T entity);
     }
 }

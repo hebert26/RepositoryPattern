@@ -38,6 +38,9 @@
     <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
     </Reference>
+    <Reference Include="StructureMap, Version=4.6.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\StructureMap.4.6.1\lib\net45\StructureMap.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
@@ -57,6 +60,14 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Repository.Ioc\Repository.Ioc.csproj">
+      <Project>{3213383C-0D2A-40A2-BAEE-B15D9282DFC7}</Project>
+      <Name>Repository.Ioc</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\RepositoryImplementation\RepositoryImplementation.csproj">
+      <Project>{79BFEE6C-BAF4-432D-9255-FDCF1D3B8E24}</Project>
+      <Name>RepositoryImplementation</Name>
+    </ProjectReference>
     <ProjectReference Include="..\RepositoryPattern.DataModel\RepositoryPattern.DataModel.csproj">
       <Project>{490AB296-45DF-46F5-9F0E-ED6466FE0A15}</Project>
       <Name>RepositoryPattern.DataModel</Name>

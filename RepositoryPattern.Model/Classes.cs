@@ -5,9 +5,13 @@ using RepositoryPattern.Classes.Enums;
 
 namespace RepositoryPattern.Classes
 {
-    public class Ninja
+    public abstract class EntityBase
     {
-        public int Id { get; set; }
+        public int Id { get; protected set; }
+    }
+
+    public class Ninja : EntityBase
+    {
         public string Name { get; set; }
         public bool ServedInOniwaban { get; set; }
         public Clan Clan { get; set; }
@@ -17,16 +21,14 @@ namespace RepositoryPattern.Classes
         public DateTime YearOfBirth { get; set; }
     }
 
-    public class Clan
+    public class Clan : EntityBase
     {
-        public int Id { get; set; }
         public string ClanName { get; set; }
         public List<Ninja> Ninjas { get; set; }
     }
 
-    public class NinjaEquipment
+    public class NinjaEquipment : EntityBase
     {
-        public int Id { get; set; }
         public string Name { get; set; }
         public EquipmentType Type { get; set; }
 
