@@ -18,23 +18,50 @@ namespace RepositoryImplementation
             DbSet = dbContext.Set<TEntity>();
         }
 
+        public IEnumerable<TEntity> AllInclude(params Expression<Func<TEntity, object>>[] includeProperties)
+        {
+            return GetAllIncluding(includeProperties).ToList();
+        }
+
+        public IEnumerable<TEntity> FindByInclude(Expression<Func<TEntity, bool>> predicate, params Expression<Func<TEntity, object>>[] includeProperties)
+        {
+            var query = GetAllIncluding(includeProperties);
+            IEnumerable<TEntity> results = query.Where(predicate).ToList();
+            return results;
+        }
+
+        private IQueryable<TEntity> GetAllIncluding(params Expression<Func<TEntity, object>>[] includeProperties)
+        {
+            IQueryable<TEntity> queryable = DbSet.AsNoTracking();
+
+            return includeProperties.Aggregate
+              (queryable, (current, includeProperty) => current.Include(includeProperty));
+        }
+
         public void Add(TEntity entity)
         {
             DbSet.Add(entity);
+            DbContext.SaveChanges();
         }
 
-        public void Delete(TEntity entity)
+        public void Delete(int id)
         {
-            throw new NotImplementedException();
+            TEntity entity = FindById(id);
+            DbSet.Remove(entity);
+            DbContext.SaveChanges();
         }
 
-        public void Edit(TEntity entity)
+        public void Update(TEntity entity)
         {
-            throw new NotImplementedException();
+            DbSet.Attach(entity);
+            DbContext.Entry(entity).State = EntityState.Modified;
+            DbContext.SaveChanges();
         }
 
         public TEntity FindById(int id)
         {
+            // Expression<Func<TEntity, bool>> lambda = Utilities.BuildLambdaForFindByKey<TEntity>(id);
+            //return _dbSet.AsNoTracking().SingleOrDefault(lambda);
             return DbSet.AsNoTracking().SingleOrDefault(x => x.Id == id);
         }
 
@@ -47,7 +74,6 @@ namespace RepositoryImplementation
         {
             IEnumerable<TEntity> result = DbSet.AsNoTracking()
                 .Where(predicate).ToList();
-
             return result;
         }
     }
