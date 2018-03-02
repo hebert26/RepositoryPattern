@@ -1,4 +1,6 @@
 ﻿using System.Data.Entity;
+using RepositoryImplementation;
+using RepositoryPattern.Classes;
 using RepositoryPattern.DataModel;
 using StructureMap;
 
@@ -25,6 +27,9 @@ namespace Repository.Ioc
         public DefaultRegistry()
         {
             For<DbContext>().Use<NinjaContext>().Transient();
+            For<IRepository<Ninja>>().Use<Repository<Ninja>>().Transient();
+            For<IRepository<NinjaEquipment>>().Use<Repository<NinjaEquipment>>().Transient();
+            For<IRepository<Clan>>().Use<Repository<Clan>>().Transient();
         }
     }
 }
